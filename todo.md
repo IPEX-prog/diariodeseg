@@ -4,7 +4,7 @@
 - [x] Definir schema do banco de dados para checklists, itens e fotos
 - [x] Configurar integração com Supabase para armazenamento de imagens
 - [x] Aplicar logo e branding IPEX Construtora
-- [ ] Configurar integração com repositório GitHub
+- [x] Configurar integração com repositório GitHub
 
 ## Funcionalidades Core
 - [x] Criar estrutura de checklist baseada em PBQP-H e NR-18
@@ -45,3 +45,11 @@
 - [ ] Publicar em manus.space
 - [ ] Integrar com repositório GitHub
 - [ ] Documentar uso do sistema
+
+
+## Bugs e Correções
+- [x] Remover salvamento automático de itens
+- [x] Adicionar botão "Salvar" manual para cada item
+- [x] Criar buckets no Supabase (checklist-photos, checklist-pdfs)
+- [x] Corrigir upload de fotos
+- [x] Corrigir geração de PDF

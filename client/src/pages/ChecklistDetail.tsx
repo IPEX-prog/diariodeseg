@@ -7,7 +7,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { APP_LOGO } from "@/const";
 import { trpc } from "@/lib/trpc";
-import { ArrowLeft, Camera, X, CheckCircle2, XCircle, MinusCircle, Download } from "lucide-react";
+import { ArrowLeft, Camera, X, CheckCircle2, XCircle, MinusCircle, Download, Save } from "lucide-react";
+import * as React from "react";
+import type { InsertChecklistItem } from "../../../drizzle/schema";
 import { Link, useParams } from "wouter";
 import { toast } from "sonner";
 import { useState, useRef } from "react";
@@ -97,15 +99,42 @@ export default function ChecklistDetail() {
     }
   };
 
+  const [editedItems, setEditedItems] = React.useState<Record<number, Partial<InsertChecklistItem>>>({});
+
   const handleObservationChange = (templateId: number, observations: string) => {
+    setEditedItems(prev => ({
+      ...prev,
+      [templateId]: {
+        ...prev[templateId],
+        observations,
+      }
+    }));
+  };
+
+  const handleSaveItem = (templateId: number) => {
     const existingItem = checklist.items?.find(item => item.templateId === templateId);
+    const edits = editedItems[templateId];
+    
+    if (!edits) return;
     
     if (existingItem) {
       updateItemMutation.mutate({
         id: existingItem.id,
-        data: { observations },
+        data: edits as any,
+      });
+    } else {
+      createItemMutation.mutate({
+        checklistId,
+        templateId,
+        ...(edits as any),
       });
     }
+    
+    setEditedItems(prev => {
+      const newState = { ...prev };
+      delete newState[templateId];
+      return newState;
+    });
   };
 
   const handlePhotoCapture = (itemId: number) => {
@@ -281,37 +310,48 @@ export default function ChecklistDetail() {
                         <>
                           <Textarea
                             placeholder="Observações..."
-                            value={item.observations || ""}
+                            value={editedItems[template.id]?.observations ?? item.observations ?? ""}
                             onChange={(e) => handleObservationChange(template.id, e.target.value)}
-                            onBlur={(e) => handleObservationChange(template.id, e.target.value)}
                             className="mb-3"
                             rows={2}
                           />
 
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
                             <Button
                               size="sm"
                               variant="outline"
                               onClick={() => handlePhotoCapture(item.id)}
+                              disabled={uploadPhotoMutation.isPending}
                             >
                               <Camera className="w-4 h-4 mr-2" />
-                              Adicionar Foto
+                              {uploadPhotoMutation.isPending ? "Enviando..." : "Adicionar Foto"}
                             </Button>
-
-                            {item.photos && item.photos.length > 0 && (
-                              <div className="flex gap-2 flex-wrap">
-                                {item.photos.map((photo) => (
-                                  <div key={photo.id} className="relative">
-                                    <img
-                                      src={photo.photoUrl}
-                                      alt="Evidência"
-                                      className="w-16 h-16 object-cover rounded border"
-                                    />
-                                  </div>
-                                ))}
-                              </div>
+                            
+                            {editedItems[template.id] && (
+                              <Button
+                                size="sm"
+                                onClick={() => handleSaveItem(template.id)}
+                                disabled={updateItemMutation.isPending}
+                              >
+                                <Save className="w-4 h-4 mr-2" />
+                                Salvar
+                              </Button>
                             )}
                           </div>
+
+                          {item.photos && item.photos.length > 0 && (
+                            <div className="flex gap-2 flex-wrap mt-3">
+                              {item.photos.map((photo) => (
+                                <div key={photo.id} className="relative">
+                                  <img
+                                    src={photo.photoUrl}
+                                    alt="Evidência"
+                                    className="w-16 h-16 object-cover rounded border"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </>
                       )}
                     </div>
