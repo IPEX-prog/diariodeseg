@@ -8,11 +8,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { APP_LOGO } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { ArrowLeft, Camera, X, CheckCircle2, XCircle, MinusCircle, Download, Save } from "lucide-react";
-import * as React from "react";
+import { useState, useRef } from "react";
 import type { InsertChecklistItem } from "../../../drizzle/schema";
 import { Link, useParams } from "wouter";
 import { toast } from "sonner";
-import { useState, useRef } from "react";
 
 export default function ChecklistDetail() {
   const params = useParams<{ id: string }>();
@@ -99,7 +98,7 @@ export default function ChecklistDetail() {
     }
   };
 
-  const [editedItems, setEditedItems] = React.useState<Record<number, Partial<InsertChecklistItem>>>({});
+  const [editedItems, setEditedItems] = useState<Record<number, Partial<InsertChecklistItem>>>({});
 
   const handleObservationChange = (templateId: number, observations: string) => {
     setEditedItems(prev => ({
