@@ -15,6 +15,13 @@
       "when": 1763563308814,
       "tag": "0001_eminent_thunderbolts",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1763581610228,
+      "tag": "0002_misty_george_stacy",
+      "breakpoints": true
     }
   ]
 }

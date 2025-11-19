@@ -8,12 +8,18 @@ import {
   checklistItemTemplates,
   checklistItems,
   checklistPhotos,
+  epiChecklists,
+  epiItems,
   type Checklist,
   type InsertChecklist,
   type ChecklistItem,
   type InsertChecklistItem,
   type ChecklistPhoto,
-  type InsertChecklistPhoto
+  type InsertChecklistPhoto,
+  type EPIChecklist,
+  type InsertEPIChecklist,
+  type EPIItem,
+  type InsertEPIItem
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -233,4 +239,86 @@ export async function deletePhoto(id: number) {
   if (!db) throw new Error("Database not available");
   
   await db.delete(checklistPhotos).where(eq(checklistPhotos.id, id));
+}
+
+// EPI Checklists
+
+export async function createEPIChecklist(data: InsertEPIChecklist) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(epiChecklists).values(data);
+  return result[0].insertId;
+}
+
+export async function getEPIChecklistsByUser(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select()
+    .from(epiChecklists)
+    .where(eq(epiChecklists.userId, userId))
+    .orderBy(desc(epiChecklists.createdAt));
+}
+
+export async function getEPIChecklistById(id: number) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.select().from(epiChecklists).where(eq(epiChecklists.id, id)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function updateEPIChecklist(id: number, data: Partial<InsertEPIChecklist>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(epiChecklists).set(data).where(eq(epiChecklists.id, id));
+}
+
+export async function deleteEPIChecklist(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  // Delete related items first
+  const items = await getEPIItems(id);
+  for (const item of items) {
+    await deleteEPIItem(item.id);
+  }
+  
+  await db.delete(epiChecklists).where(eq(epiChecklists.id, id));
+}
+
+// EPI Items
+
+export async function createEPIItem(data: InsertEPIItem) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(epiItems).values(data);
+  return result[0].insertId;
+}
+
+export async function getEPIItems(epiChecklistId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return await db.select()
+    .from(epiItems)
+    .where(eq(epiItems.epiChecklistId, epiChecklistId))
+    .orderBy(epiItems.createdAt);
+}
+
+export async function updateEPIItem(id: number, data: Partial<InsertEPIItem>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.update(epiItems).set(data).where(eq(epiItems.id, id));
+}
+
+export async function deleteEPIItem(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.delete(epiItems).where(eq(epiItems.id, id));
 }

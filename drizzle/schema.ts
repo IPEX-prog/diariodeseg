@@ -125,3 +125,41 @@ export const checklistPhotos = mysqlTable("checklistPhotos", {
 
 export type ChecklistPhoto = typeof checklistPhotos.$inferSelect;
 export type InsertChecklistPhoto = typeof checklistPhotos.$inferInsert;
+
+
+/**
+ * Checklists de EPI (Equipamento de Proteção Individual)
+ */
+export const epiChecklists = mysqlTable("epiChecklists", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  constructionSite: varchar("constructionSite", { length: 255 }).notNull(),
+  inspectionDate: timestamp("inspectionDate").notNull(),
+  inspectionTime: varchar("inspectionTime", { length: 10 }).notNull(),
+  inspectorName: varchar("inspectorName", { length: 255 }).notNull(),
+  inspectorRole: varchar("inspectorRole", { length: 255 }),
+  status: mysqlEnum("status", ["em_andamento", "concluido"]).default("em_andamento").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type EPIChecklist = typeof epiChecklists.$inferSelect;
+export type InsertEPIChecklist = typeof epiChecklists.$inferInsert;
+
+/**
+ * Itens de EPI (Equipamento de Proteção Individual)
+ */
+export const epiItems = mysqlTable("epiItems", {
+  id: int("id").autoincrement().primaryKey(),
+  epiChecklistId: int("epiChecklistId").notNull().references(() => epiChecklists.id, { onDelete: "cascade" }),
+  epiName: varchar("epiName", { length: 255 }).notNull(),
+  ca: varchar("ca", { length: 50 }).notNull(),
+  conservationState: mysqlEnum("conservationState", ["novo", "parcialmente_utilizado", "desgaste", "descarte"]),
+  collaboratorName: varchar("collaboratorName", { length: 255 }).notNull(),
+  observations: text("observations"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type EPIItem = typeof epiItems.$inferSelect;
+export type InsertEPIItem = typeof epiItems.$inferInsert;

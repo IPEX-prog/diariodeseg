@@ -250,6 +250,104 @@ export const appRouter = router({
           return { success: true };
         }),
     }),
+
+    // EPI Checklist routes
+    epi: router({
+      create: protectedProcedure
+        .input(z.object({
+          constructionSite: z.string(),
+          inspectionDate: z.date(),
+          inspectionTime: z.string(),
+          inspectorName: z.string(),
+          inspectorRole: z.string().optional(),
+        }))
+        .mutation(async ({ ctx, input }) => {
+          const checklistId = await db.createEPIChecklist({
+            userId: ctx.user.id,
+            ...input,
+            status: "em_andamento",
+          });
+          return { checklistId };
+        }),
+
+      list: protectedProcedure.query(async ({ ctx }) => {
+        return await db.getEPIChecklistsByUser(ctx.user.id);
+      }),
+
+      getById: protectedProcedure
+        .input(z.object({ id: z.number() }))
+        .query(async ({ input }) => {
+          const checklist = await db.getEPIChecklistById(input.id);
+          if (!checklist) throw new Error("EPI Checklist not found");
+          
+          const items = await db.getEPIItems(input.id);
+          return {
+            ...checklist,
+            items,
+          };
+        }),
+
+      update: protectedProcedure
+        .input(z.object({
+          id: z.number(),
+          data: z.object({
+            status: z.enum(["em_andamento", "concluido"]).optional(),
+            constructionSite: z.string().optional(),
+            inspectorName: z.string().optional(),
+            inspectorRole: z.string().optional(),
+          }),
+        }))
+        .mutation(async ({ input }) => {
+          await db.updateEPIChecklist(input.id, input.data);
+          return { success: true };
+        }),
+
+      delete: protectedProcedure
+        .input(z.object({ id: z.number() }))
+        .mutation(async ({ input }) => {
+          await db.deleteEPIChecklist(input.id);
+          return { success: true };
+        }),
+
+      item: router({
+        create: protectedProcedure
+          .input(z.object({
+            epiChecklistId: z.number(),
+            epiName: z.string(),
+            ca: z.string(),
+            conservationState: z.enum(["novo", "parcialmente_utilizado", "desgaste", "descarte"]).optional(),
+            collaboratorName: z.string(),
+            observations: z.string().optional(),
+          }))
+          .mutation(async ({ input }) => {
+            const itemId = await db.createEPIItem(input);
+            return { itemId };
+          }),
+
+        update: protectedProcedure
+          .input(z.object({
+            id: z.number(),
+            data: z.object({
+              epiName: z.string().optional(),
+              ca: z.string().optional(),
+              conservationState: z.enum(["novo", "parcialmente_utilizado", "desgaste", "descarte"]).optional(),
+              collaboratorName: z.string().optional(),
+              observations: z.string().optional(),
+            }),
+          }))
+          .mutation(async ({ input }) => {
+            await db.updateEPIItem(input.id, input.data);
+            return { success: true };
+          }),
+
+        delete: protectedProcedure
+          .input(z.object({ id: z.number() }))
+          .mutation(async ({ input }) => {
+            await db.deleteEPIItem(input.id);
+            return { success: true };
+          }),
+      }),
+    }),
   }),
 });
 

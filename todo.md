@@ -55,3 +55,14 @@
 - [x] Corrigir geração de PDF
 
 - [x] Corrigir responsividade dos títulos em dispositivos móveis
+
+
+## Novas Funcionalidades - Checklist de EPI
+- [x] Mover botão "Salvar" para ao lado do botão "Concluir" no header
+- [x] Criar schema de banco de dados para EPI (nome, CA, estado conservação, colaborador)
+- [x] Implementar rotas tRPC para gerenciamento de EPI
+- [x] Criar página de checklist de EPI (NewEPIChecklist.tsx)
+- [x] Criar página de listagem de EPI (EPIChecklistList.tsx)
+- [x] Criar página de detalhes/preenchimento de EPI (EPIChecklistDetail.tsx)
+- [x] Adicionar opção de EPI na HOME
+- [x] Implementar salvamento parcial e conclusão para EPI

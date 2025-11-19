@@ -2,7 +2,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { APP_LOGO, APP_TITLE, getLoginUrl } from "@/const";
-import { ClipboardCheck, FileText, Shield, Camera, Download } from "lucide-react";
+import { ClipboardCheck, FileText, Shield, Camera, Download, Shield as ShieldIcon } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Home() {
@@ -117,26 +117,48 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section - Checklists */}
       {isAuthenticated && (
         <section className="container mx-auto px-4 py-16">
-          <Card className="max-w-2xl mx-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white border-0">
-            <CardHeader className="text-center">
-              <CardTitle className="text-3xl text-white">Pronto para começar?</CardTitle>
-              <CardDescription className="text-blue-100 text-lg">
-                Crie seu primeiro checklist de segurança agora
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center">
-              <Link href="/checklists/new">
-                <Button size="lg" variant="secondary" className="text-lg px-8">
-                  Novo Checklist
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <Card className="bg-gradient-to-br from-blue-600 to-blue-700 text-white border-0">
+              <CardHeader className="text-center">
+                <ClipboardCheck className="w-12 h-12 mx-auto mb-2" />
+                <CardTitle className="text-white text-2xl">Checklist de Segurança</CardTitle>
+                <CardDescription className="text-blue-100">
+                  Inspeções de segurança em obras
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-center">
+                <Link href="/checklists">
+                  <Button size="lg" variant="secondary" className="w-full">
+                    Acessar Checklists
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-orange-600 to-orange-700 text-white border-0">
+              <CardHeader className="text-center">
+                <ShieldIcon className="w-12 h-12 mx-auto mb-2" />
+                <CardTitle className="text-white text-2xl">Checklist de EPI</CardTitle>
+                <CardDescription className="text-orange-100">
+                  Controle de equipamentos de proteção
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-center">
+                <Link href="/epi">
+                  <Button size="lg" variant="secondary" className="w-full">
+                    Acessar EPIs
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
         </section>
       )}
+
+
 
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-400 py-8 mt-16">

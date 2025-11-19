@@ -214,7 +214,22 @@ export default function ChecklistDetail() {
               </div>
             </div>
             
-            <div className="flex gap-2 w-full md:w-auto">
+            <div className="flex gap-2 w-full md:w-auto flex-wrap">
+              {Object.keys(editedItems).length > 0 && (
+                <Button 
+                  size="sm" 
+                  onClick={() => {
+                    Object.keys(editedItems).forEach(templateId => {
+                      handleSaveItem(parseInt(templateId));
+                    });
+                  }}
+                  disabled={updateItemMutation.isPending}
+                  className="w-full md:w-auto"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Salvar
+                </Button>
+              )}
               {checklist.status === "concluido" ? (
                 <Badge variant="default" className="bg-green-600 w-full md:w-auto text-center md:text-left">Concluído</Badge>
               ) : (
