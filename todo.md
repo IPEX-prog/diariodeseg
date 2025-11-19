@@ -53,3 +53,5 @@
 - [x] Criar buckets no Supabase (checklist-photos, checklist-pdfs)
 - [x] Corrigir upload de fotos
 - [x] Corrigir geração de PDF
+
+- [x] Corrigir responsividade dos títulos em dispositivos móveis

@@ -195,30 +195,30 @@ export default function ChecklistDetail() {
 
       {/* Header */}
       <header className="bg-white border-b shadow-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <Link href="/checklists">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="w-fit">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Voltar
               </Button>
             </Link>
             
-            <div className="flex items-center gap-3">
-              <img src={APP_LOGO} alt="IPEX Logo" className="h-8" />
-              <div className="text-center">
-                <h1 className="text-lg font-bold text-slate-900">{checklist.constructionSite}</h1>
-                <p className="text-xs text-slate-600">
+            <div className="flex items-center gap-2 md:gap-3 flex-1 md:flex-none justify-center md:justify-start">
+              <img src={APP_LOGO} alt="IPEX Logo" className="h-6 md:h-8" />
+              <div className="text-center md:text-left min-w-0">
+                <h1 className="text-sm md:text-lg font-bold text-slate-900 break-words line-clamp-2">{checklist.constructionSite}</h1>
+                <p className="text-xs text-slate-600 whitespace-nowrap">
                   {new Date(checklist.inspectionDate).toLocaleDateString('pt-BR')} - {checklist.inspectionTime}
                 </p>
               </div>
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex gap-2 w-full md:w-auto">
               {checklist.status === "concluido" ? (
-                <Badge variant="default" className="bg-green-600">Concluído</Badge>
+                <Badge variant="default" className="bg-green-600 w-full md:w-auto text-center md:text-left">Concluído</Badge>
               ) : (
-                <Button size="sm" onClick={handleComplete}>
+                <Button size="sm" onClick={handleComplete} className="w-full md:w-auto">
                   <CheckCircle2 className="w-4 h-4 mr-2" />
                   Concluir
                 </Button>
@@ -233,9 +233,9 @@ export default function ChecklistDetail() {
         {/* Info Card */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Informações da Inspeção</CardTitle>
+            <CardTitle className="text-base md:text-lg">Informações da Inspeção</CardTitle>
           </CardHeader>
-          <CardContent className="grid md:grid-cols-3 gap-4 text-sm">
+          <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div>
               <Label className="text-slate-600">Inspetor</Label>
               <p className="font-medium">{checklist.inspectorName}</p>
@@ -262,8 +262,8 @@ export default function ChecklistDetail() {
           {categorizedTemplates.map((category) => (
             <Card key={category.id}>
               <CardHeader>
-                <CardTitle className="text-xl">{category.name}</CardTitle>
-                <CardDescription>{category.description}</CardDescription>
+                <CardTitle className="text-lg md:text-xl break-words">{category.name}</CardTitle>
+                <CardDescription className="text-xs md:text-sm break-words">{category.description}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {category.templates.map((template) => {
@@ -272,7 +272,7 @@ export default function ChecklistDetail() {
                   return (
                     <div key={template.id} className="border-b pb-6 last:border-0 last:pb-0">
                       <div className="mb-3">
-                        <p className="font-medium text-slate-900 mb-3">{template.question}</p>
+                        <p className="font-medium text-slate-900 mb-3 text-sm md:text-base break-words">{template.question}</p>
                         
                         <RadioGroup
                           value={item?.status || ""}
