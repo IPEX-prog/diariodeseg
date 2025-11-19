@@ -18,6 +18,7 @@ export default function ChecklistDetail() {
   const checklistId = parseInt(params.id);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
+  const [editedItems, setEditedItems] = useState<Record<number, Partial<InsertChecklistItem>>>({});
   
   const { data: checklist, isLoading } = trpc.checklist.getById.useQuery({ id: checklistId });
   const { data: categories } = trpc.checklist.getCategories.useQuery();
@@ -97,8 +98,6 @@ export default function ChecklistDetail() {
       });
     }
   };
-
-  const [editedItems, setEditedItems] = useState<Record<number, Partial<InsertChecklistItem>>>({});
 
   const handleObservationChange = (templateId: number, observations: string) => {
     setEditedItems(prev => ({
