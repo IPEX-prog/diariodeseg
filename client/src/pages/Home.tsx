@@ -2,7 +2,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { APP_LOGO, APP_TITLE, getLoginUrl } from "@/const";
-import { ClipboardCheck, FileText, Shield, Camera, Download, Shield as ShieldIcon } from "lucide-react";
+import { ClipboardCheck, FileText, Shield, Camera, Download, Shield as ShieldIcon, BarChart3 } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Home() {
@@ -154,11 +154,26 @@ export default function Home() {
                 </Link>
               </CardContent>
             </Card>
+
+            <Card className="bg-gradient-to-br from-purple-600 to-purple-700 text-white border-0 lg:col-span-2">
+              <CardHeader className="text-center">
+                <BarChart3 className="w-12 h-12 mx-auto mb-2" />
+                <CardTitle className="text-white text-2xl">Dashboard</CardTitle>
+                <CardDescription className="text-purple-100">
+                  Análise e relatórios de segurança
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-center">
+                <Link href="/dashboard">
+                  <Button size="lg" variant="secondary" className="w-full">
+                    Ver Dashboard
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
           </div>
         </section>
       )}
-
-
 
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-400 py-8 mt-16">

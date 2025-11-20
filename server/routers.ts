@@ -20,6 +20,13 @@ export const appRouter = router({
     }),
   }),
 
+  dashboard: router({
+    stats: protectedProcedure.query(async ({ ctx }) => {
+      const { getDashboardStats } = await import("./dashboard");
+      return await getDashboardStats(ctx.user.id);
+    }),
+  }),
+
   checklist: router({
     // Get all categories with templates
     getCategories: publicProcedure.query(async () => {
@@ -307,6 +314,34 @@ export const appRouter = router({
         .mutation(async ({ input }) => {
           await db.deleteEPIChecklist(input.id);
           return { success: true };
+        }),
+
+      exportCSV: protectedProcedure
+        .input(z.object({ id: z.number() }))
+        .mutation(async ({ input }) => {
+          const checklist = await db.getEPIChecklistById(input.id);
+          if (!checklist) throw new Error("EPI Checklist not found");
+          
+          const items = await db.getEPIItems(input.id);
+          const { generateEPICSV } = await import("./epi-export");
+          const csvContent = generateEPICSV(checklist, items);
+          
+          return { csvContent };
+        }),
+
+      exportPDF: protectedProcedure
+        .input(z.object({ id: z.number() }))
+        .mutation(async ({ input }) => {
+          const checklist = await db.getEPIChecklistById(input.id);
+          if (!checklist) throw new Error("EPI Checklist not found");
+          
+          const items = await db.getEPIItems(input.id);
+          const { generateEPIPDF } = await import("./epi-export");
+          const pdfBuffer = await generateEPIPDF(checklist, items);
+          
+          // Convert buffer to base64 for transmission
+          const base64 = pdfBuffer.toString('base64');
+          return { pdfBase64: base64 };
         }),
 
       item: router({

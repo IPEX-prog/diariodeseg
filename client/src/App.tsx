@@ -11,6 +11,7 @@ import ChecklistDetail from "./pages/ChecklistDetail";
 import EPIChecklistList from "./pages/EPIChecklistList";
 import NewEPIChecklist from "./pages/NewEPIChecklist";
 import EPIChecklistDetail from "./pages/EPIChecklistDetail";
+import Dashboard from "./pages/Dashboard";
 
 function Router() {
   return (
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/epi" component={EPIChecklistList} />
       <Route path="/epi/new" component={NewEPIChecklist} />
       <Route path="/epi/:id" component={EPIChecklistDetail} />
+      <Route path="/dashboard" component={Dashboard} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { APP_LOGO } from "@/const";
 import { trpc } from "@/lib/trpc";
-import { ArrowLeft, Plus, Trash2, CheckCircle2, Save } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, CheckCircle2, Download, FileText } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "wouter";
 import { toast } from "sonner";
@@ -56,6 +56,43 @@ export default function EPIChecklistDetail() {
     },
     onError: () => {
       toast.error("Erro ao remover EPI");
+    },
+  });
+
+  const exportCSVMutation = trpc.checklist.epi.exportCSV.useMutation({
+    onSuccess: (data) => {
+      const element = document.createElement("a");
+      const file = new Blob([data.csvContent], { type: "text/csv" });
+      element.href = URL.createObjectURL(file);
+      element.download = `EPI_${checklist?.constructionSite}_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+      toast.success("CSV exportado com sucesso");
+    },
+    onError: () => {
+      toast.error("Erro ao exportar CSV");
+    },
+  });
+
+  const exportPDFMutation = trpc.checklist.epi.exportPDF.useMutation({
+    onSuccess: (data) => {
+      const binaryString = window.atob(data.pdfBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const file = new Blob([bytes], { type: "application/pdf" });
+      const element = document.createElement("a");
+      element.href = URL.createObjectURL(file);
+      element.download = `EPI_${checklist?.constructionSite}_${new Date().toISOString().split('T')[0]}.pdf`;
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+      toast.success("PDF exportado com sucesso");
+    },
+    onError: () => {
+      toast.error("Erro ao exportar PDF");
     },
   });
 
@@ -144,6 +181,26 @@ export default function EPIChecklistDetail() {
             </div>
             
             <div className="flex gap-2 w-full md:w-auto flex-wrap">
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => exportCSVMutation.mutate({ id: checklistId })}
+                disabled={exportCSVMutation.isPending}
+                className="w-full md:w-auto"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                CSV
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => exportPDFMutation.mutate({ id: checklistId })}
+                disabled={exportPDFMutation.isPending}
+                className="w-full md:w-auto"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                PDF
+              </Button>
               {checklist.status === "concluido" ? (
                 <Badge variant="default" className="bg-green-600 w-full md:w-auto text-center md:text-left">Concluído</Badge>
               ) : (

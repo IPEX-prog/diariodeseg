@@ -66,3 +66,14 @@
 - [x] Criar página de detalhes/preenchimento de EPI (EPIChecklistDetail.tsx)
 - [x] Adicionar opção de EPI na HOME
 - [x] Implementar salvamento parcial e conclusão para EPI
+
+
+## Dashboard e Exportações - Versão 3.1
+- [x] Implementar exportação de EPI em CSV
+- [x] Implementar exportação de EPI em PDF
+- [x] Criar página de Dashboard
+- [x] Adicionar gráficos de quantitativos de EPI por obra
+- [x] Adicionar gráficos de quantitativos de Checklist de Segurança por obra
+- [x] Adicionar gráficos de não conformidades
+- [x] Adicionar filtros por data e obra no dashboard
+- [x] Implementar rotas tRPC para dados do dashboard
